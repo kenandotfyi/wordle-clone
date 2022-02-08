@@ -6,7 +6,7 @@ let wordle;
 let isGameOver = false;
 
 const getWords = () => {
-  fetch('http://localhost:8000/words')
+  fetch('localhost:8000/words')
     .then((resp) => resp.json())
     .then((json) => {
       console.log(json);
@@ -125,7 +125,7 @@ const checkRow = () => {
   const guess = guessRows[currentRow].join('');
   // console.log(guess);
   if (currentTile > 4) {
-    fetch(`http://localhost:8000/check/?word=${guess}`)
+    fetch(`localhost:8000/check/?word=${guess}`)
       .then((resp) => resp.json())
       .then((json) => {
         if (json == false) {
