@@ -1,0 +1,27 @@
+{
+  "name": "wordle-clone",
+  "version": "1.0.0",
+  "description": "Wordle clone ",
+  "main": "app.js",
+  "scripts": {
+    "start:backend": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KdotA/wordle-clone.git"
+  },
+  "author": "Kenan Akinci",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KdotA/wordle-clone/issues"
+  },
+  "homepage": "https://github.com/KdotA/wordle-clone#readme",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
+    "nodemon": "^2.0.15"
+  }
+}

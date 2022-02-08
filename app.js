@@ -2,7 +2,20 @@ const tileDisp = document.querySelector('.tile-container');
 const keyboardDisp = document.querySelector('.key-container');
 const messageDisp = document.querySelector('.message-container');
 
-const wordle = 'SUPER';
+let wordle;
+let isGameOver = false;
+
+const getWords = () => {
+  fetch('http://localhost:8000/words')
+    .then((resp) => resp.json())
+    .then((json) => {
+      console.log(json);
+      wordle = json.toUpperCase();
+    })
+    .catch((err) => console.log(err));
+};
+
+getWords();
 
 const keys = [
   'Q',
@@ -68,16 +81,18 @@ keys.forEach((key) => {
 });
 
 const handleKeyClick = (key) => {
-  console.log('clicked', key);
-  if (key === 'Bksp') {
-    deleteLetter(key);
-    return;
+  // console.log('clicked', key);
+  if (!isGameOver) {
+    if (key === 'Bksp') {
+      deleteLetter(key);
+      return;
+    }
+    if (key === 'ENTER') {
+      checkRow();
+      return;
+    }
+    addLetter(key);
   }
-  if (key === 'ENTER') {
-    checkRow();
-    return;
-  }
-  addLetter(key);
 };
 
 const addLetter = (key) => {
@@ -90,7 +105,7 @@ const addLetter = (key) => {
     guessRows[currentRow][currentTile] = key;
     tileToAddLetter.setAttribute('data', key);
     currentTile++;
-    console.log(guessRows);
+    // console.log(guessRows);
   }
 };
 
@@ -108,24 +123,34 @@ const deleteLetter = () => {
 
 const checkRow = () => {
   const guess = guessRows[currentRow].join('');
-  console.log(guess);
+  // console.log(guess);
   if (currentTile > 4) {
-    flipTile();
-    if (guess == wordle) {
-      showMessage('Magnificient!');
-      isGameOver = true;
-      return;
-    } else {
-      if (currentRow >= 5) {
-        isGameOver = false;
-        showMessage('game over!');
-        return;
-      }
-      if (currentRow < 5) {
-        currentRow++;
-        currentTile = 0;
-      }
-    }
+    fetch(`http://localhost:8000/check/?word=${guess}`)
+      .then((resp) => resp.json())
+      .then((json) => {
+        if (json == false) {
+          showMessage('Kelime listede yok');
+          return;
+        } else {
+          flipTile();
+          if (guess == wordle) {
+            showMessage('Harika!');
+            isGameOver = true;
+            return;
+          } else {
+            if (currentRow >= 5) {
+              isGameOver = true;
+              showMessage('Oyun bitti!');
+              return;
+            }
+            if (currentRow < 5) {
+              currentRow++;
+              currentTile = 0;
+            }
+          }
+        }
+      })
+      .catch((err) => console.log(err));
   }
 };
 
