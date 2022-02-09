@@ -6,7 +6,7 @@ let wordle;
 let isGameOver = false;
 
 const getWords = () => {
-  fetch('localhost:8000/words')
+  fetch('http://localhost:8000/words')
     .then((resp) => resp.json())
     .then((json) => {
       console.log(json);
@@ -123,42 +123,52 @@ const deleteLetter = () => {
 
 const checkRow = () => {
   const guess = guessRows[currentRow].join('');
-  // console.log(guess);
-  if (currentTile > 4) {
-    fetch(`localhost:8000/check/?word=${guess}`)
-      .then((resp) => resp.json())
-      .then((json) => {
-        if (json == false) {
-          showMessage('Kelime listede yok');
-          return;
-        } else {
-          flipTile();
-          if (guess == wordle) {
-            showMessage('Harika!');
-            isGameOver = true;
+  console.log(guessRows[currentRow]);
+  if (guessRows[currentRow][0] !== '') {
+    if (currentTile > 4) {
+      fetch(`http://localhost:8000/check/?word=${guess}`)
+        .then((resp) => resp.json())
+        .then((json) => {
+          if (json == false) {
+            showMessage('Kelime listede yok');
             return;
           } else {
-            if (currentRow >= 5) {
+            if (guess == wordle) {
+              flipTile();
+              showMessage('Harika!');
               isGameOver = true;
-              showMessage('Oyun bitti!');
               return;
-            }
-            if (currentRow < 5) {
-              currentRow++;
-              currentTile = 0;
+            } else {
+              if (currentRow >= 5) {
+                isGameOver = true;
+                showMessage('Oyun bitti!');
+                return;
+              }
+              if (currentRow < 5) {
+                if (guessRows[currentRow][0] !== '') {
+                  flipTile();
+                  currentRow++;
+                  currentTile = 0;
+                }
+                if (guessRows[currentRow + 1][0] === '') {
+                  return;
+                }
+                return;
+              }
             }
           }
-        }
-      })
-      .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
+    }
   }
 };
 
 const showMessage = (message) => {
   const messageEl = document.createElement('p');
+  messageEl.textContent = '';
   messageEl.textContent = message;
   messageDisp.append(messageEl);
-  setTimeout(() => messageDisp.removeChild(messageEl), 2000);
+  setTimeout(() => messageDisp.removeChild(messageEl), 1000);
 };
 
 const addColorToKeyboard = (keyLetter, color) => {
