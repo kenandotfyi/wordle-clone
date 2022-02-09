@@ -9,7 +9,7 @@ const getWords = () => {
   fetch('http://localhost:8000/words')
     .then((resp) => resp.json())
     .then((json) => {
-      console.log(json);
+      //console.log(json);
       wordle = json.toUpperCase();
     })
     .catch((err) => console.log(err));
@@ -123,7 +123,7 @@ const deleteLetter = () => {
 
 const checkRow = () => {
   const guess = guessRows[currentRow].join('');
-  console.log(guessRows[currentRow]);
+  //console.log(guessRows[currentRow]);
   if (guessRows[currentRow][0] !== '') {
     if (currentTile > 4) {
       fetch(`http://localhost:8000/check/?word=${guess}`)
